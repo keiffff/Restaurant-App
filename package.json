@@ -1,0 +1,59 @@
+{
+  "name": "restaurant-app",
+  "version": "1.0.0",
+  "description": "for searching restaurant",
+  "main": "dist/index.js",
+  "repository": "https://github.com/keiffff/Restaurant-App",
+  "author": "Kei Fujikawa",
+  "license": "MIT",
+  "scripts": {
+    "remake": "rm -rf dist/; mkdir -p dist/; cp src/index.html dist/index.html;",
+    "start": "yarn remake webpack-dev-server --config webpack.config.js",
+    "build": "yarn remake; webpack --config webpack.config.js",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.8.2",
+    "@material-ui/icons": "^4.5.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "@types/react-router-dom": "^5.1.3",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jest": "^23.2.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prefer-arrow": "^1.1.7",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "prettier": "^1.19.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint .eslintrc.js --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}

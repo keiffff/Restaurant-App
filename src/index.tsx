@@ -2,25 +2,46 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Global } from '@emotion/core';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { App } from './App';
 
+const theme = createMuiTheme({
+  palette: {
+    primary: { main: '#7FC1F0' },
+    secondary: { main: '#FAB7C1' },
+  },
+  typography: {
+    button: {
+      textTransform: 'none',
+    },
+  },
+  props: {
+    MuiTextField: {
+      variant: 'outlined',
+    },
+  },
+});
+
 const globalStyle = {
-  body: {
+  'html, body': {
     fontFamily:
       '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica, Neue, sans-serif',
     WebkitFontSmoothing: 'antialiased',
     MozOsxFontSmooting: 'grayscale',
     margin: 0,
     padding: 0,
+    background: '#E6E6FB',
   },
 };
 
 ReactDOM.render(
-  <div>
+  <>
     <Global styles={globalStyle} />
     <BrowserRouter>
-      <App />
+      <MuiThemeProvider theme={theme}>
+        <App />
+      </MuiThemeProvider>
     </BrowserRouter>
-  </div>,
+  </>,
   document.getElementById('root'),
 );

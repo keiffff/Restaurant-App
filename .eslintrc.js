@@ -36,7 +36,7 @@ module.exports = {
     'no-restricted-syntax': 'off',
     // @typescript-eslint
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': [ 'error', { varsIgnorePattern: '[Rr]eact' } ],
     '@typescript-eslint/prefer-interface': 'off',
     // prettier
     'prettier/prettier': [

@@ -11,6 +11,7 @@ const globalStyle = {
     WebkitFontSmoothing: 'antialiased',
     MozOsxFontSmooting: 'grayscale',
     margin: 0,
+    padding: 0,
   },
 };
 

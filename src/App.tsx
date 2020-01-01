@@ -3,6 +3,6 @@ import { Route } from 'react-router';
 
 export const App = () => (
   <Route path="/">
-    <h1>Hello, World!</h1>
+    <h1>Hello, world!</h1>
   </Route>
 );

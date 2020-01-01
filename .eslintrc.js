@@ -23,8 +23,8 @@ module.exports = {
       jsx: true,
     },
     ecmaVersion: 2018,
-    project: './tsconfig.json',
     sourceType: 'module',
+    project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'import', 'jest', 'jsx-a11y', 'prefer-arrow', 'prettier', 'react', 'react-hooks'],
   rules: {
@@ -36,7 +36,7 @@ module.exports = {
     'no-restricted-syntax': 'off',
     // @typescript-eslint
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-unused-vars': [ 'error', { varsIgnorePattern: '[Rr]eact' } ],
+    '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '[Rr]eact' }],
     '@typescript-eslint/prefer-interface': 'off',
     // prettier
     'prettier/prettier': [

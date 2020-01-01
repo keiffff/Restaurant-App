@@ -1,7 +1,22 @@
 /** @jsx jsx */
 import React, { useState, useEffect } from 'react';
-import { jsx } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
+import { Card, CardMedia, CardContent } from '@material-ui/core';
 import { AppHeader } from '../AppHeader';
+
+const restaurantsWrapperStyle = css({
+  padding: `16px 8px 16px`,
+});
+
+const restaurantStyle = css({
+  '& + &': {
+    marginTop: 16,
+  },
+});
+
+const mediaStyle = css({
+  height: 160,
+});
 
 export const RestaurantsIndexPage = () => {
   const [restaurants, setRestaurants] = useState<any[]>([]);
@@ -20,12 +35,16 @@ export const RestaurantsIndexPage = () => {
   return (
     <div>
       <AppHeader />
-      {restaurants.map(r => (
-        <div key={r.id}>
-          <span>{r.name}</span>
-          <img src={r.image_url.shop_image1} alt="restaurant" />
-        </div>
-      ))}
+      <div css={restaurantsWrapperStyle}>
+        {restaurants.map(r => (
+          <Card key={r.id} css={restaurantStyle}>
+            <CardMedia css={mediaStyle} component="img" image={r.image_url.shop_image1} title={r.name} />
+            <CardContent>
+              <span>{r.name}</span>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

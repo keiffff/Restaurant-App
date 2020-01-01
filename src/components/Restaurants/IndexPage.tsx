@@ -10,9 +10,11 @@ import { GetRestaurantsQuery } from '../../types/graphql';
 const GET_RESTAURANTS = gql`
   query getRestaurants {
     restaurants {
-      id
-      name
-      image
+      restaurants {
+        id
+        name
+        image
+      }
     }
   }
 `;
@@ -46,7 +48,7 @@ export const RestaurantsIndexPage = () => {
     <div>
       <AppHeader />
       <div css={restaurantsWrapperStyle}>
-        {data?.restaurants.map(r => (
+        {data.restaurants.restaurants.map(r => (
           <Card key={r.id} css={restaurantStyle}>
             <CardMedia css={mediaStyle} component="img" image={r.image} title={r.name} />
             <CardContent>

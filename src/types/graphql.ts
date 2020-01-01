@@ -12,13 +12,35 @@ export type Scalars = {
   Float: number;
 };
 
-export type Query = {
-  __typename?: 'Query';
+export type FilterInput = {
+  currentPage?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+  range?: Maybe<Scalars['Int']>;
+  freeword?: Maybe<Scalars['String']>;
+  lunch?: Maybe<Scalars['Int']>;
+  bottomLessCup?: Maybe<Scalars['Int']>;
+  buffet?: Maybe<Scalars['Int']>;
+  parivateRoom?: Maybe<Scalars['Int']>;
+  webReserve?: Maybe<Scalars['Int']>;
+};
+
+export type GetRestaurantsResponse = {
+  __typename?: 'GetRestaurantsResponse';
+  totalCount: Scalars['Int'];
+  perPage: Scalars['Int'];
+  currentPage: Scalars['Int'];
   restaurants: Array<Restaurant>;
 };
 
+export type Query = {
+  __typename?: 'Query';
+  restaurants: GetRestaurantsResponse;
+};
+
 export type QueryRestaurantsArgs = {
-  freeword?: Maybe<Scalars['String']>;
+  input?: Maybe<FilterInput>;
 };
 
 export type Restaurant = {
@@ -26,20 +48,27 @@ export type Restaurant = {
   id: Scalars['ID'];
   name: Scalars['String'];
   image: Scalars['String'];
+  openTime: Scalars['String'];
+  nearStation: Scalars['String'];
+  budget: Scalars['Int'];
 };
 
 export type GetRestaurantsQueryVariables = {};
 
 export type GetRestaurantsQuery = { __typename?: 'Query' } & {
-  restaurants: Array<{ __typename?: 'Restaurant' } & Pick<Restaurant, 'id' | 'name' | 'image'>>;
+  restaurants: { __typename?: 'GetRestaurantsResponse' } & {
+    restaurants: Array<{ __typename?: 'Restaurant' } & Pick<Restaurant, 'id' | 'name' | 'image'>>;
+  };
 };
 
 export const GetRestaurantsDocument = gql`
   query getRestaurants {
     restaurants {
-      id
-      name
-      image
+      restaurants {
+        id
+        name
+        image
+      }
     }
   }
 `;

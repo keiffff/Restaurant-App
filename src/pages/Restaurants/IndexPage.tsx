@@ -8,7 +8,6 @@ import { ArrowRight as ArrowRightIcon } from '@material-ui/icons';
 import { AppHeader } from 'components/AppHeader';
 import { RestaurantList } from 'components/RestaurantList';
 import { RestarantFilterModal } from 'containers/RestaurantFilterModal';
-import { SearchForm } from 'components/SearchForm';
 import { FilterState, FilterAction, FilterRestaurantContext } from 'contexts/filterRestaurant';
 import { GetRestaurantsQuery } from 'types/graphql';
 
@@ -29,13 +28,13 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
     case 'changeQuery':
       return { ...state, query: action.payload };
     case 'toggleLunch':
-      return { ...state, lunch: !state.lunch };
+      return { ...state, lunch: action.payload };
     case 'toggleBottomLessCup':
-      return { ...state, bottomLessCup: !state.bottomLessCup };
+      return { ...state, bottomLessCup: action.payload };
     case 'toggleBuffet':
-      return { ...state, buffet: !state.buffet };
+      return { ...state, buffet: action.payload };
     case 'togglePrivateRoom':
-      return { ...state, privateRoom: !state.privateRoom };
+      return { ...state, privateRoom: action.payload };
     default:
       return state;
   }
@@ -66,10 +65,6 @@ const pageSectionStyle = css({
 const headerStyle = css({
   padding: 16,
   background: 'white',
-});
-
-const searchFormWrapperStyle = css({
-  marginBottom: 12,
 });
 
 const filterButtonWrapperStyle = css({
@@ -105,23 +100,27 @@ const pageFooterStyle = css({
 export const RestaurantsIndexPage = () => {
   const { loading, error, data } = useQuery<GetRestaurantsQuery>(GET_RESTAURANTS);
   const [filterState, filterDispatch] = useReducer(filterReducer, initialFilterState);
+  const resetFilter = useCallback(() => {
+    filterDispatch({ type: 'changeRange', payload: initialFilterState.range });
+    filterDispatch({ type: 'changeQuery', payload: initialFilterState.query });
+    filterDispatch({ type: 'toggleLunch', payload: initialFilterState.lunch });
+    filterDispatch({ type: 'toggleBottomLessCup', payload: initialFilterState.bottomLessCup });
+    filterDispatch({ type: 'toggleBuffet', payload: initialFilterState.buffet });
+    filterDispatch({ type: 'togglePrivateRoom', payload: initialFilterState.privateRoom });
+  }, []);
   const [modalOpen, setModalOpen] = useState(false);
-  const handleChangeQuery = useCallback((value: string) => filterDispatch({ type: 'changeQuery', payload: value }), []);
 
   return (
-    <FilterRestaurantContext.Provider value={{ filterState, filterDispatch }}>
+    <FilterRestaurantContext.Provider value={{ filterState, filterDispatch, resetFilter }}>
       <AppHeader />
       <header css={headerStyle}>
-        <div css={searchFormWrapperStyle}>
-          <SearchForm query={filterState.query} onChangeQuery={handleChangeQuery} />
-        </div>
         <div css={filterButtonWrapperStyle}>
           <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
             絞り込む
             <ArrowRightIcon />
           </Button>
         </div>
-        <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} />
+        <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} onSubmit={console.log} />
       </header>
       <section css={pageSectionStyle}>
         {loading ? (

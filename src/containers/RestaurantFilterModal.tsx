@@ -1,13 +1,15 @@
 /** @jsx jsx */
 import { ChangeEvent, useCallback, useContext } from 'react';
 import { jsx, css } from '@emotion/core';
-import { Checkbox, FormControlLabel, MenuItem, Modal, Select } from '@material-ui/core';
+import { Button, Checkbox, FormControlLabel, MenuItem, Modal, Select } from '@material-ui/core';
+import { Cancel as CancelIcon, Navigation as NavigationIcon } from '@material-ui/icons';
 import { SearchForm } from 'components/SearchForm';
-import { FilterRestaurantContext } from 'contexts/filterRestaurant';
+import { FilterState, FilterRestaurantContext } from 'contexts/filterRestaurant';
 
 type Props = {
   open: boolean;
   onClose: () => void;
+  onSubmit: (payload: FilterState) => void;
 };
 
 const rangeItems = [
@@ -50,18 +52,43 @@ const rangeSelectStyle = css({
   '&:after': {
     content: '"m 以内"',
   },
-  marginBottom: 12,
+  marginBottom: 24,
 });
 
-export const RestarantFilterModal = ({ open, onClose }: Props) => {
-  const { filterState, filterDispatch } = useContext(FilterRestaurantContext);
-  const handleTogglePrivateRoom = useCallback(() => filterDispatch({ type: 'togglePrivateRoom' }), [filterDispatch]);
-  const handleToggleLunch = useCallback(() => filterDispatch({ type: 'toggleLunch' }), [filterDispatch]);
-  const handleToggleWebReserve = useCallback(() => filterDispatch({ type: 'toggleWebReserve' }), [filterDispatch]);
-  const handleToggleBuffet = useCallback(() => filterDispatch({ type: 'toggleBuffet' }), [filterDispatch]);
-  const handleToggleBottomLessCup = useCallback(() => filterDispatch({ type: 'toggleBottomLessCup' }), [
-    filterDispatch,
-  ]);
+const buttonsWrapperStyle = css({
+  display: 'flex',
+  justifyContent: 'center',
+  '> button': {
+    width: '80%',
+  },
+});
+
+export const RestarantFilterModal = ({ open, onClose, onSubmit }: Props) => {
+  const { filterState, filterDispatch, resetFilter } = useContext(FilterRestaurantContext);
+  const handleCloseModal = useCallback(() => {
+    resetFilter();
+    onClose();
+  }, [resetFilter, onClose]);
+  const handleTogglePrivateRoom = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => filterDispatch({ type: 'togglePrivateRoom', payload: e.target.checked }),
+    [filterDispatch],
+  );
+  const handleToggleLunch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => filterDispatch({ type: 'toggleLunch', payload: e.target.checked }),
+    [filterDispatch],
+  );
+  const handleToggleWebReserve = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => filterDispatch({ type: 'toggleWebReserve', payload: e.target.checked }),
+    [filterDispatch],
+  );
+  const handleToggleBuffet = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => filterDispatch({ type: 'toggleBuffet', payload: e.target.checked }),
+    [filterDispatch],
+  );
+  const handleToggleBottomLessCup = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => filterDispatch({ type: 'toggleBottomLessCup', payload: e.target.checked }),
+    [filterDispatch],
+  );
   const handleChangeQuery = useCallback((value: string) => filterDispatch({ type: 'changeQuery', payload: value }), [
     filterDispatch,
   ]);
@@ -69,9 +96,13 @@ export const RestarantFilterModal = ({ open, onClose }: Props) => {
     (e: ChangeEvent<{ value: unknown }>) => filterDispatch({ type: 'changeRange', payload: Number(e.target.value) }),
     [filterDispatch],
   );
+  const handleSubmit = useCallback(() => {
+    onSubmit(filterState);
+    resetFilter();
+  }, [filterState, onSubmit, resetFilter]);
 
   return (
-    <Modal css={modalStyle} open={open} onClose={onClose}>
+    <Modal css={modalStyle} open={open} onClose={handleCloseModal}>
       <div css={contentWrapperStyle}>
         <div css={searchFormWrapperStyle}>
           <SearchForm query={filterState.query} onChangeQuery={handleChangeQuery} />
@@ -91,6 +122,15 @@ export const RestarantFilterModal = ({ open, onClose }: Props) => {
               </MenuItem>
             ))}
           </Select>
+        </div>
+        <div css={buttonsWrapperStyle}>
+          <Button size="small" onClick={handleSubmit}>
+            <NavigationIcon />
+            送信
+          </Button>
+          <Button size="small" onClick={handleCloseModal}>
+            <CancelIcon /> キャンセル
+          </Button>
         </div>
       </div>
     </Modal>

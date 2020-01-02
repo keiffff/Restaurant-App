@@ -11,13 +11,13 @@ export type FilterState = {
 };
 
 export type FilterAction =
-  | { type: 'changeRange'; payload: number }
+  | { type: 'changeRange'; payload: number | null }
   | { type: 'changeQuery'; payload: string }
-  | { type: 'toggleLunch' }
-  | { type: 'toggleBottomLessCup' }
-  | { type: 'toggleBuffet' }
-  | { type: 'togglePrivateRoom' }
-  | { type: 'toggleWebReserve' };
+  | { type: 'toggleLunch'; payload: boolean }
+  | { type: 'toggleBottomLessCup'; payload: boolean }
+  | { type: 'toggleBuffet'; payload: boolean }
+  | { type: 'togglePrivateRoom'; payload: boolean }
+  | { type: 'toggleWebReserve'; payload: boolean };
 
 const initialFilterState: FilterState = {
   range: null,
@@ -32,10 +32,11 @@ const initialFilterState: FilterState = {
 type FilterRestaurant = {
   filterState: FilterState;
   filterDispatch: Dispatch<FilterAction>;
+  resetFilter: () => void;
 };
 
 export const FilterRestaurantContext = createContext<FilterRestaurant>({
   filterState: initialFilterState,
-  // eslint-disable-next-line
   filterDispatch: () => {},
+  resetFilter: () => {},
 });

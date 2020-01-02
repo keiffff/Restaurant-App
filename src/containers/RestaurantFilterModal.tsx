@@ -3,6 +3,7 @@ import { ChangeEvent, useCallback, useContext } from 'react';
 import { jsx, css } from '@emotion/core';
 import { Button, Checkbox, FormControlLabel, MenuItem, Modal, Select } from '@material-ui/core';
 import { Cancel as CancelIcon, Navigation as NavigationIcon } from '@material-ui/icons';
+import { useLocationInfo } from 'hooks/LocationInfo';
 import { SearchForm } from 'components/SearchForm';
 import { FilterState, FilterRestaurantContext } from 'contexts/filterRestaurant';
 
@@ -64,6 +65,7 @@ const buttonsWrapperStyle = css({
 });
 
 export const RestarantFilterModal = ({ open, onClose, onSubmit }: Props) => {
+  const { positionError, currentPosition } = useLocationInfo({});
   const { filterState, filterDispatch, resetFilter } = useContext(FilterRestaurantContext);
   const handleCloseModal = useCallback(() => {
     resetFilter();
@@ -115,7 +117,11 @@ export const RestarantFilterModal = ({ open, onClose, onSubmit }: Props) => {
           <FormControlLabel control={<Checkbox onChange={handleToggleBottomLessCup} />} label="飲み放題" />
         </div>
         <div css={rangeSelectStyle}>
-          <Select onChange={handleChangeRange} value={filterState.range ?? ''}>
+          <Select
+            onChange={handleChangeRange}
+            value={filterState.range ?? ''}
+            disabled={!!positionError || !currentPosition?.coords}
+          >
             {rangeItems.map(({ label, value }) => (
               <MenuItem key={label} value={value}>
                 {label}

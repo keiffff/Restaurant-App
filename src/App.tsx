@@ -4,6 +4,7 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from '@apollo/react-hooks';
+import { LocationInfoProvider } from './containers/LocationInfoProvider';
 import { RestaurantsIndexPage } from './pages/Restaurants/IndexPage';
 
 const httpLink = new HttpLink({
@@ -14,10 +15,12 @@ const client = new ApolloClient({ link: httpLink, cache: new InMemoryCache() });
 
 export const App = () => {
   return (
-    <ApolloProvider client={client}>
-      <Route path="/">
-        <RestaurantsIndexPage />
-      </Route>
-    </ApolloProvider>
+    <LocationInfoProvider>
+      <ApolloProvider client={client}>
+        <Route path="/">
+          <RestaurantsIndexPage />
+        </Route>
+      </ApolloProvider>
+    </LocationInfoProvider>
   );
 };

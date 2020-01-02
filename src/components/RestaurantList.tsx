@@ -55,7 +55,6 @@ const infoItemStyle = css({
 
 const contentStyle = css({
   padding: `8px 16px`,
-  whiteSpace: 'pre-wrap',
 });
 
 const restaurantNameStyle = css({
@@ -66,11 +65,16 @@ const expandButtonStyle = css({
   marginLeft: 'auto',
 });
 
-const openTimeStyle = css({
-  fontWeight: 'bold',
+const openTimeTitleStyle = css({
+  margin: 0,
+  display: 'inline-block',
   '&:after': {
     content: '"："',
   },
+});
+
+const openTimeTextStyle = css({
+  display: 'inline',
 });
 
 const RestaurantItem = ({ restaurant }: { restaurant: Restaurant }) => {
@@ -103,8 +107,8 @@ const RestaurantItem = ({ restaurant }: { restaurant: Restaurant }) => {
         </CardActions>
         <Collapse in={expanded}>
           <CardContent css={contentStyle}>
-            <span css={openTimeStyle}>営業時間</span>
-            {restaurant.openTime}
+            <h4 css={openTimeTitleStyle}>営業時間</h4>
+            <p css={openTimeTextStyle}>{restaurant.openTime}</p>
           </CardContent>
         </Collapse>
       </Card>

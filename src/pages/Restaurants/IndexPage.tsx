@@ -10,7 +10,7 @@ import { RestaurantList } from 'components/RestaurantList';
 import { RestarantFilterModal } from 'containers/RestaurantFilterModal';
 import { SearchForm } from 'components/SearchForm';
 import { FilterState, FilterAction, FilterRestaurantContext } from 'contexts/filterRestaurant';
-import { GetRestaurantsQuery } from 'types/graphql';
+import { GetRestaurantsQuery, GetRestaurantsQueryVariables } from 'types/graphql';
 
 const initialFilterState: FilterState = {
   range: null,
@@ -34,6 +34,8 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
       return { ...state, bottomLessCup: action.payload };
     case 'toggleBuffet':
       return { ...state, buffet: action.payload };
+    case 'toggleWebReserve':
+      return { ...state, webReserve: action.payload };
     case 'togglePrivateRoom':
       return { ...state, privateRoom: action.payload };
     default:
@@ -41,9 +43,35 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
   }
 }
 
+function mapBooleanToInt(value: boolean) {
+  return value ? 1 : 0;
+}
+
 const GET_RESTAURANTS = gql`
-  query getRestaurants {
-    restaurants {
+  query getRestaurants(
+    $latitude: Float
+    $longitude: Float
+    $range: Int
+    $freeword: String
+    $lunch: Int
+    $bottomLessCup: Int
+    $buffet: Int
+    $privateRoom: Int
+    $webReserve: Int
+  ) {
+    restaurants(
+      input: {
+        latitude: $latitude
+        longitude: $longitude
+        range: $range
+        freeword: $freeword
+        lunch: $lunch
+        bottomLessCup: $bottomLessCup
+        buffet: $buffet
+        privateRoom: $privateRoom
+        webReserve: $webReserve
+      }
+    ) {
       totalCount
       perPage
       currentPage
@@ -103,23 +131,31 @@ const pageFooterStyle = css({
 });
 
 export const RestaurantsIndexPage = () => {
-  const { loading, error, data } = useQuery<GetRestaurantsQuery>(GET_RESTAURANTS);
+  const { loading, error, data, refetch } = useQuery<GetRestaurantsQuery, GetRestaurantsQueryVariables>(
+    GET_RESTAURANTS,
+  );
   const [filterState, filterDispatch] = useReducer(filterReducer, initialFilterState);
-  const resetFilter = useCallback(() => {
-    filterDispatch({ type: 'changeRange', payload: initialFilterState.range });
-    filterDispatch({ type: 'changeQuery', payload: initialFilterState.query });
-    filterDispatch({ type: 'toggleLunch', payload: initialFilterState.lunch });
-    filterDispatch({ type: 'toggleBottomLessCup', payload: initialFilterState.bottomLessCup });
-    filterDispatch({ type: 'toggleBuffet', payload: initialFilterState.buffet });
-    filterDispatch({ type: 'togglePrivateRoom', payload: initialFilterState.privateRoom });
-  }, []);
   const [modalOpen, setModalOpen] = useState(false);
   const handleChangeQuery = useCallback((value: string) => filterDispatch({ type: 'changeQuery', payload: value }), [
     filterDispatch,
   ]);
+  const handleSubmit = useCallback(
+    (value: FilterState, location?: { latitude: number; longitude: number }) =>
+      refetch({
+        ...(value.range && location ? { range: value.range } : {}),
+        freeword: value.query,
+        lunch: mapBooleanToInt(value.lunch),
+        bottomLessCup: mapBooleanToInt(value.bottomLessCup),
+        buffet: mapBooleanToInt(value.buffet),
+        webReserve: mapBooleanToInt(value.webReserve),
+        privateRoom: mapBooleanToInt(value.privateRoom),
+        ...(value.range && location ? { latitude: location.latitude, longitude: location.longitude } : {}),
+      }),
+    [refetch],
+  );
 
   return (
-    <FilterRestaurantContext.Provider value={{ filterState, filterDispatch, resetFilter }}>
+    <FilterRestaurantContext.Provider value={{ filterState, filterDispatch }}>
       <AppHeader />
       <header css={headerStyle}>
         <div css={searchFormWrapperStyle}>
@@ -131,7 +167,7 @@ export const RestaurantsIndexPage = () => {
             <ArrowRightIcon />
           </Button>
         </div>
-        <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} onSubmit={console.log} />
+        <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} onSubmit={handleSubmit} />
       </header>
       <section css={pageSectionStyle}>
         {loading ? (

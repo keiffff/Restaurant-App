@@ -54,7 +54,17 @@ export type Restaurant = {
   budget?: Maybe<Scalars['Int']>;
 };
 
-export type GetRestaurantsQueryVariables = {};
+export type GetRestaurantsQueryVariables = {
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+  range?: Maybe<Scalars['Int']>;
+  freeword?: Maybe<Scalars['String']>;
+  lunch?: Maybe<Scalars['Int']>;
+  bottomLessCup?: Maybe<Scalars['Int']>;
+  buffet?: Maybe<Scalars['Int']>;
+  privateRoom?: Maybe<Scalars['Int']>;
+  webReserve?: Maybe<Scalars['Int']>;
+};
 
 export type GetRestaurantsQuery = { __typename?: 'Query' } & {
   restaurants: { __typename?: 'GetRestaurantsResponse' } & Pick<
@@ -71,8 +81,30 @@ export type GetRestaurantsQuery = { __typename?: 'Query' } & {
 };
 
 export const GetRestaurantsDocument = gql`
-  query getRestaurants {
-    restaurants {
+  query getRestaurants(
+    $latitude: Float
+    $longitude: Float
+    $range: Int
+    $freeword: String
+    $lunch: Int
+    $bottomLessCup: Int
+    $buffet: Int
+    $privateRoom: Int
+    $webReserve: Int
+  ) {
+    restaurants(
+      input: {
+        latitude: $latitude
+        longitude: $longitude
+        range: $range
+        freeword: $freeword
+        lunch: $lunch
+        bottomLessCup: $bottomLessCup
+        buffet: $buffet
+        privateRoom: $privateRoom
+        webReserve: $webReserve
+      }
+    ) {
       totalCount
       perPage
       currentPage
@@ -100,6 +132,15 @@ export const GetRestaurantsDocument = gql`
  * @example
  * const { data, loading, error } = useGetRestaurantsQuery({
  *   variables: {
+ *      latitude: // value for 'latitude'
+ *      longitude: // value for 'longitude'
+ *      range: // value for 'range'
+ *      freeword: // value for 'freeword'
+ *      lunch: // value for 'lunch'
+ *      bottomLessCup: // value for 'bottomLessCup'
+ *      buffet: // value for 'buffet'
+ *      privateRoom: // value for 'privateRoom'
+ *      webReserve: // value for 'webReserve'
  *   },
  * });
  */

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { ChangeEvent, useCallback, useContext } from 'react';
+import { ChangeEvent, useCallback, useContext, useState } from 'react';
 import { jsx, css } from '@emotion/core';
 import { Button, Checkbox, FormControlLabel, MenuItem, Modal, Select } from '@material-ui/core';
 import { Cancel as CancelIcon, Navigation as NavigationIcon } from '@material-ui/icons';
@@ -7,19 +7,21 @@ import { useLocationInfo } from 'hooks/LocationInfo';
 import { SearchForm } from 'components/SearchForm';
 import { FilterState, FilterRestaurantContext } from 'contexts/filterRestaurant';
 
+type Location = { latitude: number; longitude: number };
+
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSubmit: (payload: FilterState) => void;
+  onSubmit: (payload: FilterState, location?: Location) => void;
 };
 
 const rangeItems = [
-  { label: '', value: '' },
-  { label: '200', value: 200 },
-  { label: '400', value: 400 },
-  { label: '600', value: 600 },
-  { label: '800', value: 800 },
-  { label: '1000', value: 1000 },
+  { label: '', value: 0 },
+  { label: '300', value: 1 },
+  { label: '500', value: 2 },
+  { label: '1000', value: 3 },
+  { label: '2000', value: 4 },
+  { label: '3000', value: 5 },
 ];
 
 const modalStyle = css({
@@ -66,11 +68,8 @@ const buttonsWrapperStyle = css({
 
 export const RestarantFilterModal = ({ open, onClose, onSubmit }: Props) => {
   const { positionError, currentPosition } = useLocationInfo({});
-  const { filterState, filterDispatch, resetFilter } = useContext(FilterRestaurantContext);
-  const handleCloseModal = useCallback(() => {
-    resetFilter();
-    onClose();
-  }, [resetFilter, onClose]);
+  const [location, setLocation] = useState<Location>();
+  const { filterState, filterDispatch } = useContext(FilterRestaurantContext);
   const handleTogglePrivateRoom = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => filterDispatch({ type: 'togglePrivateRoom', payload: e.target.checked }),
     [filterDispatch],
@@ -95,31 +94,51 @@ export const RestarantFilterModal = ({ open, onClose, onSubmit }: Props) => {
     filterDispatch,
   ]);
   const handleChangeRange = useCallback(
-    (e: ChangeEvent<{ value: unknown }>) => filterDispatch({ type: 'changeRange', payload: Number(e.target.value) }),
-    [filterDispatch],
+    (e: ChangeEvent<{ value: unknown }>) => {
+      if (!currentPosition) return;
+      setLocation({ latitude: currentPosition.coords.latitude, longitude: currentPosition.coords.longitude });
+      filterDispatch({ type: 'changeRange', payload: Number(e.target.value) ? Number(e.target.value) : null });
+    },
+    [currentPosition, filterDispatch],
   );
   const handleSubmit = useCallback(() => {
-    onSubmit(filterState);
-    resetFilter();
-  }, [filterState, onSubmit, resetFilter]);
+    onSubmit(filterState, location);
+    setLocation(undefined);
+    onClose();
+  }, [filterState, location, onClose, onSubmit]);
 
   return (
-    <Modal css={modalStyle} open={open} onClose={handleCloseModal}>
+    <Modal css={modalStyle} open={open} onClose={onClose}>
       <div css={contentWrapperStyle}>
         <div css={searchFormWrapperStyle}>
-          <SearchForm query={filterState.query} onChangeQuery={handleChangeQuery} />
+          <SearchForm query={filterState.query} onChangeQuery={handleChangeQuery} onSubmit={handleSubmit} />
         </div>
         <div css={checkboxesWrapperStyle}>
-          <FormControlLabel control={<Checkbox onChange={handleTogglePrivateRoom} />} label="個室" />
-          <FormControlLabel control={<Checkbox onChange={handleToggleLunch} />} label="ランチ営業あり" />
-          <FormControlLabel control={<Checkbox onChange={handleToggleWebReserve} />} label="Web予約可能" />
-          <FormControlLabel control={<Checkbox onChange={handleToggleBuffet} />} label="食べ放題" />
-          <FormControlLabel control={<Checkbox onChange={handleToggleBottomLessCup} />} label="飲み放題" />
+          <FormControlLabel
+            control={<Checkbox checked={filterState.privateRoom} onChange={handleTogglePrivateRoom} />}
+            label="個室"
+          />
+          <FormControlLabel
+            control={<Checkbox checked={filterState.lunch} onChange={handleToggleLunch} />}
+            label="ランチ営業あり"
+          />
+          <FormControlLabel
+            control={<Checkbox checked={filterState.webReserve} onChange={handleToggleWebReserve} />}
+            label="Web予約可能"
+          />
+          <FormControlLabel
+            control={<Checkbox checked={filterState.buffet} onChange={handleToggleBuffet} />}
+            label="食べ放題"
+          />
+          <FormControlLabel
+            control={<Checkbox checked={filterState.bottomLessCup} onChange={handleToggleBottomLessCup} />}
+            label="飲み放題"
+          />
         </div>
         <div css={rangeSelectStyle}>
           <Select
             onChange={handleChangeRange}
-            value={filterState.range ?? ''}
+            value={filterState.range ?? 0}
             disabled={!!positionError || !currentPosition?.coords}
           >
             {rangeItems.map(({ label, value }) => (
@@ -134,7 +153,7 @@ export const RestarantFilterModal = ({ open, onClose, onSubmit }: Props) => {
             <NavigationIcon />
             送信
           </Button>
-          <Button size="small" onClick={handleCloseModal}>
+          <Button size="small" onClick={onClose}>
             <CancelIcon /> キャンセル
           </Button>
         </div>

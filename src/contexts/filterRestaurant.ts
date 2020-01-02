@@ -32,11 +32,9 @@ const initialFilterState: FilterState = {
 type FilterRestaurant = {
   filterState: FilterState;
   filterDispatch: Dispatch<FilterAction>;
-  resetFilter: () => void;
 };
 
 export const FilterRestaurantContext = createContext<FilterRestaurant>({
   filterState: initialFilterState,
   filterDispatch: () => {},
-  resetFilter: () => {},
 });

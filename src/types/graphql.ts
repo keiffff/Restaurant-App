@@ -50,7 +50,8 @@ export type Restaurant = {
   image: Scalars['String'];
   openTime: Scalars['String'];
   nearStation: Scalars['String'];
-  budget: Scalars['Int'];
+  lunch?: Maybe<Scalars['Int']>;
+  budget?: Maybe<Scalars['Int']>;
 };
 
 export type GetRestaurantsQueryVariables = {};

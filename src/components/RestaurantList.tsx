@@ -2,7 +2,12 @@
 import React, { useCallback, useState } from 'react';
 import { jsx, css } from '@emotion/core';
 import { Card, CardActions, CardMedia, CardContent, Collapse, IconButton } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon, Payment as PaymentIcon, Place as PlaceIcon } from '@material-ui/icons';
+import {
+  ExpandMore as ExpandMoreIcon,
+  Place as PlaceIcon,
+  WbSunny as DayIcon,
+  Brightness2 as NightIcon,
+} from '@material-ui/icons';
 import { Restaurant } from 'types/graphql';
 
 type Props = {
@@ -53,6 +58,12 @@ const infoItemStyle = css({
   },
 });
 
+const priceStyle = css({
+  '&:after': {
+    content: '" 円"',
+  },
+});
+
 const contentStyle = css({
   padding: `8px 16px`,
 });
@@ -88,8 +99,12 @@ const RestaurantItem = ({ restaurant }: { restaurant: Restaurant }) => {
           <CardMedia css={mediaStyle} component="img" image={restaurant.image} title={restaurant.name} />
           <div css={restaurantInfoOnMediaStyle}>
             <span css={infoItemStyle}>
-              <PaymentIcon />
-              {restaurant.budget} 円
+              <DayIcon />
+              <span css={priceStyle}>{restaurant.lunch ? restaurant.lunch : '-'}</span>
+            </span>
+            <span css={infoItemStyle}>
+              <NightIcon />
+              <span css={priceStyle}>{restaurant.budget ? restaurant.budget : '-'}</span>
             </span>
             <span css={infoItemStyle}>
               <PlaceIcon />

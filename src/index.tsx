@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Global } from '@emotion/core';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { App } from './App';
+import { App } from 'App';
 
 const theme = createMuiTheme({
   palette: {

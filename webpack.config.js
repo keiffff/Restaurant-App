@@ -5,6 +5,7 @@ module.exports = {
   entry: './src/index.tsx',
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
   },
   devServer: {
     open: true,
@@ -20,7 +21,7 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader'
+            loader: 'babel-loader',
           },
           {
             loader: 'ts-loader',

@@ -5,9 +5,9 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { CircularProgress, Input, InputAdornment, Select } from '@material-ui/core';
 import { Search as SearchIcon } from '@material-ui/icons';
-import { AppHeader } from '../../components/AppHeader';
-import { RestaurantList } from '../../components/RestaurantList';
-import { GetRestaurantsQuery } from '../../types/graphql';
+import { AppHeader } from 'components/AppHeader';
+import { RestaurantList } from 'components/RestaurantList';
+import { GetRestaurantsQuery } from 'types/graphql';
 
 const GET_RESTAURANTS = gql`
   query getRestaurants {

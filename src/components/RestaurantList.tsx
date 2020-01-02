@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { jsx, css } from '@emotion/core';
 import { Card, CardActions, CardMedia, CardContent, Collapse, IconButton } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon, Payment as PaymentIcon, Place as PlaceIcon } from '@material-ui/icons';
-import { Restaurant } from '../types/graphql';
+import { Restaurant } from 'types/graphql';
 
 type Props = {
   restaurants: Restaurant[];

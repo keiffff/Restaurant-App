@@ -8,6 +8,7 @@ import { ArrowRight as ArrowRightIcon } from '@material-ui/icons';
 import { AppHeader } from 'components/AppHeader';
 import { RestaurantList } from 'components/RestaurantList';
 import { RestarantFilterModal } from 'containers/RestaurantFilterModal';
+import { SearchForm } from 'components/SearchForm';
 import { FilterState, FilterAction, FilterRestaurantContext } from 'contexts/filterRestaurant';
 import { GetRestaurantsQuery } from 'types/graphql';
 
@@ -67,6 +68,10 @@ const headerStyle = css({
   background: 'white',
 });
 
+const searchFormWrapperStyle = css({
+  marginBottom: 12,
+});
+
 const filterButtonWrapperStyle = css({
   display: 'flex',
   justifyContent: 'flex-end',
@@ -109,11 +114,17 @@ export const RestaurantsIndexPage = () => {
     filterDispatch({ type: 'togglePrivateRoom', payload: initialFilterState.privateRoom });
   }, []);
   const [modalOpen, setModalOpen] = useState(false);
+  const handleChangeQuery = useCallback((value: string) => filterDispatch({ type: 'changeQuery', payload: value }), [
+    filterDispatch,
+  ]);
 
   return (
     <FilterRestaurantContext.Provider value={{ filterState, filterDispatch, resetFilter }}>
       <AppHeader />
       <header css={headerStyle}>
+        <div css={searchFormWrapperStyle}>
+          <SearchForm query={filterState.query} onChangeQuery={handleChangeQuery} />
+        </div>
         <div css={filterButtonWrapperStyle}>
           <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
             絞り込む

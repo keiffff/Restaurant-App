@@ -38,6 +38,7 @@ export const SearchForm = ({ query, onChangeQuery, onSubmit }: Props) => {
             <SearchIcon />
           </InputAdornment>
         }
+        value={query}
         onChange={handleChange}
       />
     </form>

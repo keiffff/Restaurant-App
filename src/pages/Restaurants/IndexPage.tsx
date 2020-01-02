@@ -3,7 +3,7 @@ import React from 'react';
 import { jsx, css } from '@emotion/core';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { CircularProgress, Input, InputAdornment, Select } from '@material-ui/core';
+import { CircularProgress, Input, InputAdornment } from '@material-ui/core';
 import { Search as SearchIcon } from '@material-ui/icons';
 import { AppHeader } from 'components/AppHeader';
 import { RestaurantList } from 'components/RestaurantList';
@@ -12,6 +12,9 @@ import { GetRestaurantsQuery } from 'types/graphql';
 const GET_RESTAURANTS = gql`
   query getRestaurants {
     restaurants {
+      totalCount
+      perPage
+      currentPage
       restaurants {
         id
         name
@@ -41,19 +44,21 @@ const searchFormStyle = css({
   marginBottom: 8,
 });
 
-const rangeSelectStyle = css({
-  '&:before': {
-    content: '"ここから"',
-  },
-  '&:after': {
-    content: '"m 以内"',
-  },
-});
-
 const loadingContentWrapperStyle = css({
   display: 'flex',
   justifyContent: 'center',
   padding: `8px 0 16px`,
+});
+
+const searchResultStyle = css({
+  marginBottom: 8,
+  '&:after': {
+    content: '"件 表示中"',
+  },
+});
+
+const searchResultTextStyle = css({
+  margin: `0 4px`,
 });
 
 const pageFooterStyle = css({
@@ -81,9 +86,6 @@ export const RestaurantsIndexPage = () => {
             }
           />
         </div>
-        <div css={rangeSelectStyle}>
-          <Select />
-        </div>
       </header>
       <section css={pageSectionStyle}>
         {loading ? (
@@ -91,7 +93,15 @@ export const RestaurantsIndexPage = () => {
             <CircularProgress size={60} />
           </div>
         ) : null}
-        {!error && data ? <RestaurantList restaurants={data.restaurants.restaurants} /> : null}
+        {!error && data ? (
+          <div>
+            <div css={searchResultStyle}>
+              <span css={searchResultTextStyle}>{data.restaurants.currentPage * data.restaurants.perPage}</span>/
+              <span css={searchResultTextStyle}>{data.restaurants.totalCount}</span>
+            </div>
+            <RestaurantList restaurants={data.restaurants.restaurants} />
+          </div>
+        ) : null}
       </section>
       <footer css={pageFooterStyle}>&copy; 2020 Kei Fujikawa</footer>
     </div>

@@ -57,16 +57,25 @@ export type Restaurant = {
 export type GetRestaurantsQueryVariables = {};
 
 export type GetRestaurantsQuery = { __typename?: 'Query' } & {
-  restaurants: { __typename?: 'GetRestaurantsResponse' } & {
-    restaurants: Array<
-      { __typename?: 'Restaurant' } & Pick<Restaurant, 'id' | 'name' | 'image' | 'openTime' | 'nearStation' | 'budget'>
-    >;
-  };
+  restaurants: { __typename?: 'GetRestaurantsResponse' } & Pick<
+    GetRestaurantsResponse,
+    'totalCount' | 'perPage' | 'currentPage'
+  > & {
+      restaurants: Array<
+        { __typename?: 'Restaurant' } & Pick<
+          Restaurant,
+          'id' | 'name' | 'image' | 'openTime' | 'nearStation' | 'budget'
+        >
+      >;
+    };
 };
 
 export const GetRestaurantsDocument = gql`
   query getRestaurants {
     restaurants {
+      totalCount
+      perPage
+      currentPage
       restaurants {
         id
         name

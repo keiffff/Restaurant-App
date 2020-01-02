@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState } from 'react';
+import { useReducer, useState, useCallback } from 'react';
 import { jsx, css } from '@emotion/core';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
@@ -7,9 +7,39 @@ import { Button, CircularProgress } from '@material-ui/core';
 import { ArrowRight as ArrowRightIcon } from '@material-ui/icons';
 import { AppHeader } from 'components/AppHeader';
 import { RestaurantList } from 'components/RestaurantList';
-import { RestarantFilterModal } from 'components/RestaurantFilterModal';
+import { RestarantFilterModal } from 'containers/RestaurantFilterModal';
 import { SearchForm } from 'components/SearchForm';
+import { FilterState, FilterAction, FilterRestaurantContext } from 'contexts/filterRestaurant';
 import { GetRestaurantsQuery } from 'types/graphql';
+
+const initialFilterState: FilterState = {
+  range: null,
+  query: '',
+  lunch: false,
+  bottomLessCup: false,
+  buffet: false,
+  privateRoom: false,
+  webReserve: false,
+};
+
+function filterReducer(state: FilterState, action: FilterAction): FilterState {
+  switch (action.type) {
+    case 'changeRange':
+      return { ...state, range: action.payload };
+    case 'changeQuery':
+      return { ...state, query: action.payload };
+    case 'toggleLunch':
+      return { ...state, lunch: !state.lunch };
+    case 'toggleBottomLessCup':
+      return { ...state, bottomLessCup: !state.bottomLessCup };
+    case 'toggleBuffet':
+      return { ...state, buffet: !state.buffet };
+    case 'togglePrivateRoom':
+      return { ...state, privateRoom: !state.privateRoom };
+    default:
+      return state;
+  }
+}
 
 const GET_RESTAURANTS = gql`
   query getRestaurants {
@@ -39,9 +69,6 @@ const headerStyle = css({
 });
 
 const searchFormWrapperStyle = css({
-  '> .MuiInput-root': {
-    width: '100%',
-  },
   marginBottom: 12,
 });
 
@@ -77,14 +104,16 @@ const pageFooterStyle = css({
 
 export const RestaurantsIndexPage = () => {
   const { loading, error, data } = useQuery<GetRestaurantsQuery>(GET_RESTAURANTS);
+  const [filterState, filterDispatch] = useReducer(filterReducer, initialFilterState);
   const [modalOpen, setModalOpen] = useState(false);
+  const handleChangeQuery = useCallback((value: string) => filterDispatch({ type: 'changeQuery', payload: value }), []);
 
   return (
-    <div>
+    <FilterRestaurantContext.Provider value={{ filterState, filterDispatch }}>
       <AppHeader />
       <header css={headerStyle}>
         <div css={searchFormWrapperStyle}>
-          <SearchForm />
+          <SearchForm query={filterState.query} onChangeQuery={handleChangeQuery} />
         </div>
         <div css={filterButtonWrapperStyle}>
           <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
@@ -111,6 +140,6 @@ export const RestaurantsIndexPage = () => {
         ) : null}
       </section>
       <footer css={pageFooterStyle}>&copy; 2020 Kei Fujikawa</footer>
-    </div>
+    </FilterRestaurantContext.Provider>
   );
 };

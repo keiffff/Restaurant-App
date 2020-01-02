@@ -22,7 +22,7 @@ export type FilterInput = {
   lunch?: Maybe<Scalars['Int']>;
   bottomLessCup?: Maybe<Scalars['Int']>;
   buffet?: Maybe<Scalars['Int']>;
-  parivateRoom?: Maybe<Scalars['Int']>;
+  privateRoom?: Maybe<Scalars['Int']>;
   webReserve?: Maybe<Scalars['Int']>;
 };
 

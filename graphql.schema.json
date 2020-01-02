@@ -141,7 +141,7 @@
             "defaultValue": null
           },
           {
-            "name": "parivateRoom",
+            "name": "privateRoom",
             "description": "",
             "type": {
               "kind": "SCALAR",

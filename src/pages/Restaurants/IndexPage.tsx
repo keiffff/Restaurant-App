@@ -159,7 +159,11 @@ export const RestaurantsIndexPage = () => {
       <AppHeader />
       <header css={headerStyle}>
         <div css={searchFormWrapperStyle}>
-          <SearchForm query={filterState.query} onChangeQuery={handleChangeQuery} />
+          <SearchForm
+            query={filterState.query}
+            onChangeQuery={handleChangeQuery}
+            onSubmit={() => handleSubmit(filterState)}
+          />
         </div>
         <div css={filterButtonWrapperStyle}>
           <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>

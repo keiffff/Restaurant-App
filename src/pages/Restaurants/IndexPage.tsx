@@ -1,13 +1,13 @@
 /** @jsx jsx */
-import React from 'react';
+import { useState } from 'react';
 import { jsx, css } from '@emotion/core';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { CircularProgress, Input, InputAdornment } from '@material-ui/core';
-import { Search as SearchIcon } from '@material-ui/icons';
+import { Button, CircularProgress, Input, InputAdornment } from '@material-ui/core';
+import { ArrowRight as ArrowRightIcon, Search as SearchIcon } from '@material-ui/icons';
 import { AppHeader } from 'components/AppHeader';
 import { RestaurantList } from 'components/RestaurantList';
-import { useLocationInfo } from 'hooks/LocationInfo';
+import { RestarantFilterModal } from 'components/RestaurantFilterModal';
 import { GetRestaurantsQuery } from 'types/graphql';
 
 const GET_RESTAURANTS = gql`
@@ -42,7 +42,12 @@ const searchFormStyle = css({
   '> .MuiInput-root': {
     width: '100%',
   },
-  marginBottom: 8,
+  marginBottom: 12,
+});
+
+const filterButtonWrapperStyle = css({
+  display: 'flex',
+  justifyContent: 'flex-end',
 });
 
 const loadingContentWrapperStyle = css({
@@ -72,11 +77,10 @@ const pageFooterStyle = css({
 
 export const RestaurantsIndexPage = () => {
   const { loading, error, data } = useQuery<GetRestaurantsQuery>(GET_RESTAURANTS);
-  const { currentPosition } = useLocationInfo({});
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div>
-      {console.log(currentPosition)}
       <AppHeader />
       <header css={headerStyle}>
         <div css={searchFormStyle}>
@@ -89,6 +93,13 @@ export const RestaurantsIndexPage = () => {
             }
           />
         </div>
+        <div css={filterButtonWrapperStyle}>
+          <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
+            絞り込む
+            <ArrowRightIcon />
+          </Button>
+        </div>
+        <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} />
       </header>
       <section css={pageSectionStyle}>
         {loading ? (

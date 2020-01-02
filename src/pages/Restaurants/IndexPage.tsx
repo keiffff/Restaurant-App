@@ -3,11 +3,12 @@ import { useState } from 'react';
 import { jsx, css } from '@emotion/core';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { Button, CircularProgress, Input, InputAdornment } from '@material-ui/core';
-import { ArrowRight as ArrowRightIcon, Search as SearchIcon } from '@material-ui/icons';
+import { Button, CircularProgress } from '@material-ui/core';
+import { ArrowRight as ArrowRightIcon } from '@material-ui/icons';
 import { AppHeader } from 'components/AppHeader';
 import { RestaurantList } from 'components/RestaurantList';
 import { RestarantFilterModal } from 'components/RestaurantFilterModal';
+import { SearchForm } from 'components/SearchForm';
 import { GetRestaurantsQuery } from 'types/graphql';
 
 const GET_RESTAURANTS = gql`
@@ -37,8 +38,7 @@ const headerStyle = css({
   background: 'white',
 });
 
-const searchFormStyle = css({
-  display: 'block',
+const searchFormWrapperStyle = css({
   '> .MuiInput-root': {
     width: '100%',
   },
@@ -83,15 +83,8 @@ export const RestaurantsIndexPage = () => {
     <div>
       <AppHeader />
       <header css={headerStyle}>
-        <div css={searchFormStyle}>
-          <Input
-            placeholder="キーワードで検索..."
-            startAdornment={
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            }
-          />
+        <div css={searchFormWrapperStyle}>
+          <SearchForm />
         </div>
         <div css={filterButtonWrapperStyle}>
           <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>

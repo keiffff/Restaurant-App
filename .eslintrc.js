@@ -34,6 +34,7 @@ module.exports = {
     'import/prefer-default-export': ['off'],
     'no-fallthrough': 'off',
     'no-restricted-syntax': 'off',
+    'no-unused-expressions': ['error', { allowShortCircuit: true }],
     // @typescript-eslint
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '[Rr]eact' }],

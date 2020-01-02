@@ -7,6 +7,7 @@ import { CircularProgress, Input, InputAdornment } from '@material-ui/core';
 import { Search as SearchIcon } from '@material-ui/icons';
 import { AppHeader } from 'components/AppHeader';
 import { RestaurantList } from 'components/RestaurantList';
+import { useLocationInfo } from 'hooks/LocationInfo';
 import { GetRestaurantsQuery } from 'types/graphql';
 
 const GET_RESTAURANTS = gql`
@@ -71,9 +72,11 @@ const pageFooterStyle = css({
 
 export const RestaurantsIndexPage = () => {
   const { loading, error, data } = useQuery<GetRestaurantsQuery>(GET_RESTAURANTS);
+  const { currentPosition } = useLocationInfo({});
 
   return (
     <div>
+      {console.log(currentPosition)}
       <AppHeader />
       <header css={headerStyle}>
         <div css={searchFormStyle}>

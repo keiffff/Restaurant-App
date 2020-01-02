@@ -10,8 +10,9 @@ type Props = {
 };
 
 const restaurantsWrapperStyle = css({
+  padding: 0,
   margin: 0,
-  padding: `16px 8px 16px`,
+  width: '100%',
   listStyle: 'none',
 });
 

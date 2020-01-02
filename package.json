@@ -11,6 +11,7 @@
     "start": "yarn remake; webpack-dev-server --config webpack.config.js --progress",
     "build": "yarn remake; NODE_ENV=production webpack --config webpack.config.js",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "deploy": "yarn build; now --prod",
     "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {

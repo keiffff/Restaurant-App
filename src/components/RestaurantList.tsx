@@ -10,7 +10,9 @@ type Props = {
 };
 
 const restaurantsWrapperStyle = css({
+  margin: 0,
   padding: `16px 8px 16px`,
+  listStyle: 'none',
 });
 
 const restaurantStyle = css({
@@ -75,44 +77,46 @@ const RestaurantItem = ({ restaurant }: { restaurant: Restaurant }) => {
   const handleToggleExpanded = useCallback(() => setExpanded(state => !state), []);
 
   return (
-    <Card key={restaurant.id} css={restaurantStyle}>
-      <div css={mediaWrapperStyle}>
-        <CardMedia css={mediaStyle} component="img" image={restaurant.image} title={restaurant.name} />
-        <div css={restaurantInfoOnMediaStyle}>
-          <span css={infoItemStyle}>
-            <PaymentIcon />
-            {restaurant.budget} 円
-          </span>
-          <span css={infoItemStyle}>
-            <PlaceIcon />
-            {restaurant.nearStation}
-          </span>
+    <li css={restaurantStyle}>
+      <Card key={restaurant.id}>
+        <div css={mediaWrapperStyle}>
+          <CardMedia css={mediaStyle} component="img" image={restaurant.image} title={restaurant.name} />
+          <div css={restaurantInfoOnMediaStyle}>
+            <span css={infoItemStyle}>
+              <PaymentIcon />
+              {restaurant.budget} 円
+            </span>
+            <span css={infoItemStyle}>
+              <PlaceIcon />
+              {restaurant.nearStation}
+            </span>
+          </div>
         </div>
-      </div>
-      <CardContent css={contentStyle}>
-        <h3 css={restaurantNameStyle}>{restaurant.name}</h3>
-      </CardContent>
-      <CardActions>
-        <IconButton css={expandButtonStyle} size="small" onClick={handleToggleExpanded}>
-          <ExpandMoreIcon />
-        </IconButton>
-      </CardActions>
-      <Collapse in={expanded}>
         <CardContent css={contentStyle}>
-          <span css={openTimeStyle}>営業時間</span>
-          {restaurant.openTime}
+          <h3 css={restaurantNameStyle}>{restaurant.name}</h3>
         </CardContent>
-      </Collapse>
-    </Card>
+        <CardActions>
+          <IconButton css={expandButtonStyle} size="small" onClick={handleToggleExpanded}>
+            <ExpandMoreIcon />
+          </IconButton>
+        </CardActions>
+        <Collapse in={expanded}>
+          <CardContent css={contentStyle}>
+            <span css={openTimeStyle}>営業時間</span>
+            {restaurant.openTime}
+          </CardContent>
+        </Collapse>
+      </Card>
+    </li>
   );
 };
 
 export const RestaurantList = ({ restaurants }: Props) => {
   return (
-    <div css={restaurantsWrapperStyle}>
+    <ul css={restaurantsWrapperStyle}>
       {restaurants.map(r => (
         <RestaurantItem key={r.id} restaurant={r} />
       ))}
-    </div>
+    </ul>
   );
 };

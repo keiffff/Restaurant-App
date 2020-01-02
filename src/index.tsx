@@ -7,7 +7,7 @@ import { App } from './App';
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: '#7FC1F0' },
+    primary: { main: '#F8A404' },
     secondary: { main: '#FAB7C1' },
   },
   typography: {
@@ -30,7 +30,7 @@ const globalStyle = {
     MozOsxFontSmooting: 'grayscale',
     margin: 0,
     padding: 0,
-    background: '#E6E6FB',
+    background: '#F7F8FB',
   },
 };
 

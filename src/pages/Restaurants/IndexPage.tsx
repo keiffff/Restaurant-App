@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { useReducer, useState, useCallback } from 'react';
 import { jsx, css } from '@emotion/core';
-import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { Button, CircularProgress } from '@material-ui/core';
 import { ArrowRight as ArrowRightIcon } from '@material-ui/icons';
@@ -10,6 +9,7 @@ import { RestaurantList } from 'components/RestaurantList';
 import { RestarantFilterModal } from 'containers/RestaurantFilterModal';
 import { SearchForm } from 'components/SearchForm';
 import { FilterState, FilterAction, FilterRestaurantContext } from 'contexts/filterRestaurant';
+import { GET_RESTAURANTS } from 'queries/query';
 import { GetRestaurantsQuery, GetRestaurantsQueryVariables } from 'types/graphql';
 
 const initialFilterState: FilterState = {
@@ -46,46 +46,6 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
 function mapBooleanToInt(value: boolean) {
   return value ? 1 : 0;
 }
-
-const GET_RESTAURANTS = gql`
-  query getRestaurants(
-    $latitude: Float
-    $longitude: Float
-    $range: Int
-    $freeword: String
-    $lunch: Int
-    $bottomLessCup: Int
-    $buffet: Int
-    $privateRoom: Int
-    $webReserve: Int
-  ) {
-    restaurants(
-      input: {
-        latitude: $latitude
-        longitude: $longitude
-        range: $range
-        freeword: $freeword
-        lunch: $lunch
-        bottomLessCup: $bottomLessCup
-        buffet: $buffet
-        privateRoom: $privateRoom
-        webReserve: $webReserve
-      }
-    ) {
-      totalCount
-      perPage
-      currentPage
-      restaurants {
-        id
-        name
-        image
-        openTime
-        nearStation
-        budget
-      }
-    }
-  }
-`;
 
 const pageSectionStyle = css({
   padding: `16px 8px 16px`,

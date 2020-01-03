@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useReducer, useState, useCallback } from 'react';
+import { useEffect, useReducer, useState, useCallback } from 'react';
 import { jsx, css } from '@emotion/core';
 import { useQuery } from '@apollo/react-hooks';
 import { Button, CircularProgress } from '@material-ui/core';
@@ -113,43 +113,54 @@ export const RestaurantsIndexPage = () => {
       }),
     [refetch],
   );
+  const handleScroll = useCallback(() => {
+    const { top } = document.body.getBoundingClientRect();
+    console.log(top === document.documentElement.clientHeight - document.documentElement.scrollHeight);
+  }, []);
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   return (
-    <FilterRestaurantContext.Provider value={{ filterState, filterDispatch }}>
+    <div>
       <AppHeader />
-      <nav css={navigationStyle}>
-        <div css={searchFormWrapperStyle}>
-          <SearchForm
-            query={filterState.query}
-            onChangeQuery={handleChangeQuery}
-            onSubmit={() => handleSubmit(filterState)}
-          />
-        </div>
-        <div css={filterButtonWrapperStyle}>
-          <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
-            絞り込む
-            <ArrowRightIcon />
-          </Button>
-        </div>
-        <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} onSubmit={handleSubmit} />
-      </nav>
-      <section css={pageSectionStyle}>
-        {loading ? (
-          <div css={loadingContentWrapperStyle}>
-            <CircularProgress size={60} />
+      <FilterRestaurantContext.Provider value={{ filterState, filterDispatch }}>
+        <nav css={navigationStyle}>
+          <div css={searchFormWrapperStyle}>
+            <SearchForm
+              query={filterState.query}
+              onChangeQuery={handleChangeQuery}
+              onSubmit={() => handleSubmit(filterState)}
+            />
           </div>
-        ) : null}
-        {!error && data ? (
-          <div>
-            <div css={searchResultStyle}>
-              <span css={searchResultTextStyle}>{data.restaurants.currentPage * data.restaurants.perPage}</span>/
-              <span css={searchResultTextStyle}>{data.restaurants.totalCount}</span>
+          <div css={filterButtonWrapperStyle}>
+            <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
+              絞り込む
+              <ArrowRightIcon />
+            </Button>
+          </div>
+          <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} onSubmit={handleSubmit} />
+        </nav>
+        <section css={pageSectionStyle}>
+          {loading ? (
+            <div css={loadingContentWrapperStyle}>
+              <CircularProgress size={60} />
             </div>
-            <RestaurantList restaurants={data.restaurants.restaurants} />
-          </div>
-        ) : null}
-      </section>
-      <footer css={pageFooterStyle}>&copy; 2020 Kei Fujikawa</footer>
-    </FilterRestaurantContext.Provider>
+          ) : null}
+          {!error && data ? (
+            <div>
+              <div css={searchResultStyle}>
+                <span css={searchResultTextStyle}>{data.restaurants.currentPage * data.restaurants.perPage}</span>/
+                <span css={searchResultTextStyle}>{data.restaurants.totalCount}</span>
+              </div>
+              <RestaurantList restaurants={data.restaurants.restaurants} />
+            </div>
+          ) : null}
+        </section>
+        <footer css={pageFooterStyle}>&copy; 2020 Kei Fujikawa</footer>
+      </FilterRestaurantContext.Provider>
+    </div>
   );
 };

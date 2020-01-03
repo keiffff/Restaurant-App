@@ -29,6 +29,7 @@ module.exports = {
   plugins: ['@typescript-eslint', 'import', 'jest', 'jsx-a11y', 'prefer-arrow', 'prettier', 'react', 'react-hooks'],
   rules: {
     // eslint
+    'consistent-return': ['off'],
     'newline-before-return': 'error',
     'no-console': 'off',
     'import/prefer-default-export': ['off'],

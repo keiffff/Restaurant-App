@@ -126,6 +126,7 @@ export const RestaurantsIndexPage = () => {
 
         return {
           restaurants: {
+            __typename: 'GetRestaurantsResponse',
             ...prev,
             restaurants: [...prev.restaurants.restaurants, ...fetchMoreResult.restaurants.restaurants],
             pageInfo: { ...prev.restaurants.pageInfo, ...fetchMoreResult.restaurants.pageInfo },
@@ -178,11 +179,6 @@ export const RestaurantsIndexPage = () => {
             </div>
           ) : null}
         </section>
-        {loading ? (
-          <div css={loadingContentWrapperStyle}>
-            <CircularProgress size={60} />
-          </div>
-        ) : null}
         <footer css={pageFooterStyle}>&copy; 2020 Kei Fujikawa</footer>
       </FilterRestaurantContext.Provider>
     </div>

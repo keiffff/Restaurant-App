@@ -134,8 +134,9 @@ const RestaurantItem = ({ restaurant }: { restaurant: Restaurant }) => {
 export const RestaurantList = ({ restaurants }: Props) => {
   return (
     <ul css={restaurantsWrapperStyle}>
-      {restaurants.map(r => (
-        <RestaurantItem key={r.id} restaurant={r} />
+      {restaurants.map((r, i) => (
+        // eslint-disable-next-line
+        <RestaurantItem key={i} restaurant={r} />
       ))}
     </ul>
   );

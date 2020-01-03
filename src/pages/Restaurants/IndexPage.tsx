@@ -178,6 +178,11 @@ export const RestaurantsIndexPage = () => {
             </div>
           ) : null}
         </section>
+        {loading ? (
+          <div css={loadingContentWrapperStyle}>
+            <CircularProgress size={60} />
+          </div>
+        ) : null}
         <footer css={pageFooterStyle}>&copy; 2020 Kei Fujikawa</footer>
       </FilterRestaurantContext.Provider>
     </div>

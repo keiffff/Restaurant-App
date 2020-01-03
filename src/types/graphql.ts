@@ -13,8 +13,7 @@ export type Scalars = {
 };
 
 export type FilterInput = {
-  currentPage?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
+  offsetPage?: Maybe<Scalars['Int']>;
   latitude?: Maybe<Scalars['Float']>;
   longitude?: Maybe<Scalars['Float']>;
   range?: Maybe<Scalars['Int']>;
@@ -28,10 +27,15 @@ export type FilterInput = {
 
 export type GetRestaurantsResponse = {
   __typename?: 'GetRestaurantsResponse';
+  restaurants: Array<Restaurant>;
+  pageInfo: PageInfo;
+};
+
+export type PageInfo = {
+  __typename?: 'PageInfo';
   totalCount: Scalars['Int'];
   perPage: Scalars['Int'];
   currentPage: Scalars['Int'];
-  restaurants: Array<Restaurant>;
 };
 
 export type Query = {
@@ -67,17 +71,12 @@ export type GetRestaurantsQueryVariables = {
 };
 
 export type GetRestaurantsQuery = { __typename?: 'Query' } & {
-  restaurants: { __typename?: 'GetRestaurantsResponse' } & Pick<
-    GetRestaurantsResponse,
-    'totalCount' | 'perPage' | 'currentPage'
-  > & {
-      restaurants: Array<
-        { __typename?: 'Restaurant' } & Pick<
-          Restaurant,
-          'id' | 'name' | 'image' | 'openTime' | 'nearStation' | 'budget'
-        >
-      >;
-    };
+  restaurants: { __typename?: 'GetRestaurantsResponse' } & {
+    restaurants: Array<
+      { __typename?: 'Restaurant' } & Pick<Restaurant, 'id' | 'name' | 'image' | 'openTime' | 'nearStation' | 'budget'>
+    >;
+    pageInfo: { __typename?: 'PageInfo' } & Pick<PageInfo, 'totalCount' | 'perPage' | 'currentPage'>;
+  };
 };
 
 export const GetRestaurantsDocument = gql`
@@ -105,9 +104,6 @@ export const GetRestaurantsDocument = gql`
         webReserve: $webReserve
       }
     ) {
-      totalCount
-      perPage
-      currentPage
       restaurants {
         id
         name
@@ -115,6 +111,11 @@ export const GetRestaurantsDocument = gql`
         openTime
         nearStation
         budget
+      }
+      pageInfo {
+        totalCount
+        perPage
+        currentPage
       }
     }
   }

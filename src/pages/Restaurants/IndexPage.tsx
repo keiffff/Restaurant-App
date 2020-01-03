@@ -93,6 +93,7 @@ const pageFooterStyle = css({
 export const RestaurantsIndexPage = () => {
   const { loading, error, data, refetch } = useQuery<GetRestaurantsQuery, GetRestaurantsQueryVariables>(
     GET_RESTAURANTS,
+    { notifyOnNetworkStatusChange: true },
   );
   const [filterState, filterDispatch] = useReducer(filterReducer, initialFilterState);
   const [modalOpen, setModalOpen] = useState(false);
@@ -152,8 +153,10 @@ export const RestaurantsIndexPage = () => {
           {!error && data ? (
             <div>
               <div css={searchResultStyle}>
-                <span css={searchResultTextStyle}>{data.restaurants.currentPage * data.restaurants.perPage}</span>/
-                <span css={searchResultTextStyle}>{data.restaurants.totalCount}</span>
+                <span css={searchResultTextStyle}>
+                  {data.restaurants.pageInfo.currentPage * data.restaurants.pageInfo.perPage}
+                </span>
+                /<span css={searchResultTextStyle}>{data.restaurants.pageInfo.totalCount}</span>
               </div>
               <RestaurantList restaurants={data.restaurants.restaurants} />
             </div>

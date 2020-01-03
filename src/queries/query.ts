@@ -25,9 +25,6 @@ export const GET_RESTAURANTS = gql`
         webReserve: $webReserve
       }
     ) {
-      totalCount
-      perPage
-      currentPage
       restaurants {
         id
         name
@@ -35,6 +32,11 @@ export const GET_RESTAURANTS = gql`
         openTime
         nearStation
         budget
+      }
+      pageInfo {
+        totalCount
+        perPage
+        currentPage
       }
     }
   }

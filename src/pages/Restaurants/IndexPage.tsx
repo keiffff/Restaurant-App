@@ -51,7 +51,7 @@ const pageSectionStyle = css({
   padding: `16px 8px 16px`,
 });
 
-const headerStyle = css({
+const navigationStyle = css({
   padding: 16,
   background: 'white',
 });
@@ -117,7 +117,7 @@ export const RestaurantsIndexPage = () => {
   return (
     <FilterRestaurantContext.Provider value={{ filterState, filterDispatch }}>
       <AppHeader />
-      <header css={headerStyle}>
+      <nav css={navigationStyle}>
         <div css={searchFormWrapperStyle}>
           <SearchForm
             query={filterState.query}
@@ -132,7 +132,7 @@ export const RestaurantsIndexPage = () => {
           </Button>
         </div>
         <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} onSubmit={handleSubmit} />
-      </header>
+      </nav>
       <section css={pageSectionStyle}>
         {loading ? (
           <div css={loadingContentWrapperStyle}>

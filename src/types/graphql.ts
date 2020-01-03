@@ -59,6 +59,7 @@ export type Restaurant = {
 };
 
 export type GetRestaurantsQueryVariables = {
+  offsetPage?: Maybe<Scalars['Int']>;
   latitude?: Maybe<Scalars['Float']>;
   longitude?: Maybe<Scalars['Float']>;
   range?: Maybe<Scalars['Int']>;
@@ -81,6 +82,7 @@ export type GetRestaurantsQuery = { __typename?: 'Query' } & {
 
 export const GetRestaurantsDocument = gql`
   query getRestaurants(
+    $offsetPage: Int
     $latitude: Float
     $longitude: Float
     $range: Int
@@ -93,6 +95,7 @@ export const GetRestaurantsDocument = gql`
   ) {
     restaurants(
       input: {
+        offsetPage: $offsetPage
         latitude: $latitude
         longitude: $longitude
         range: $range
@@ -133,6 +136,7 @@ export const GetRestaurantsDocument = gql`
  * @example
  * const { data, loading, error } = useGetRestaurantsQuery({
  *   variables: {
+ *      offsetPage: // value for 'offsetPage'
  *      latitude: // value for 'latitude'
  *      longitude: // value for 'longitude'
  *      range: // value for 'range'

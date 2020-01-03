@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 export const GET_RESTAURANTS = gql`
   query getRestaurants(
+    $offsetPage: Int
     $latitude: Float
     $longitude: Float
     $range: Int
@@ -14,6 +15,7 @@ export const GET_RESTAURANTS = gql`
   ) {
     restaurants(
       input: {
+        offsetPage: $offsetPage
         latitude: $latitude
         longitude: $longitude
         range: $range

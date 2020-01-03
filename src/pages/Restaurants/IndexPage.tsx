@@ -91,7 +91,7 @@ const pageFooterStyle = css({
 });
 
 export const RestaurantsIndexPage = () => {
-  const { loading, error, data, refetch } = useQuery<GetRestaurantsQuery, GetRestaurantsQueryVariables>(
+  const { loading, error, data, refetch, fetchMore } = useQuery<GetRestaurantsQuery, GetRestaurantsQueryVariables>(
     GET_RESTAURANTS,
     { notifyOnNetworkStatusChange: true },
   );
@@ -115,9 +115,25 @@ export const RestaurantsIndexPage = () => {
     [refetch],
   );
   const handleScroll = useCallback(() => {
-    const { top } = document.body.getBoundingClientRect();
-    console.log(top === document.documentElement.clientHeight - document.documentElement.scrollHeight);
-  }, []);
+    const reachedBottom =
+      document.body.getBoundingClientRect().top ===
+      document.documentElement.clientHeight - document.documentElement.scrollHeight;
+    if (loading || !data || !reachedBottom) return;
+    fetchMore({
+      variables: { offsetPage: data.restaurants.pageInfo.currentPage + 1 },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+
+        return {
+          restaurants: {
+            ...prev,
+            restaurants: [...prev.restaurants.restaurants, ...fetchMoreResult.restaurants.restaurants],
+            pageInfo: { ...prev.restaurants.pageInfo, ...fetchMoreResult.restaurants.pageInfo },
+          },
+        } as GetRestaurantsQuery;
+      },
+    });
+  }, [data, fetchMore, loading]);
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
 

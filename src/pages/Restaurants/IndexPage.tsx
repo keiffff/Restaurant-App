@@ -68,7 +68,7 @@ const filterButtonWrapperStyle = css({
 const loadingContentWrapperStyle = css({
   display: 'flex',
   justifyContent: 'center',
-  padding: `8px 0 16px`,
+  padding: `16px 0 16px`,
 });
 
 const searchResultStyle = css({
@@ -162,11 +162,6 @@ export const RestaurantsIndexPage = () => {
           <RestarantFilterModal open={modalOpen} onClose={() => setModalOpen(false)} onSubmit={handleSubmit} />
         </nav>
         <section css={pageSectionStyle}>
-          {loading ? (
-            <div css={loadingContentWrapperStyle}>
-              <CircularProgress size={60} />
-            </div>
-          ) : null}
           {!error && data ? (
             <div>
               <div css={searchResultStyle}>
@@ -176,6 +171,11 @@ export const RestaurantsIndexPage = () => {
                 /<span css={searchResultTextStyle}>{data.restaurants.pageInfo.totalCount}</span>
               </div>
               <RestaurantList restaurants={data.restaurants.restaurants} />
+            </div>
+          ) : null}
+          {loading ? (
+            <div css={loadingContentWrapperStyle}>
+              <CircularProgress size={60} />
             </div>
           ) : null}
         </section>

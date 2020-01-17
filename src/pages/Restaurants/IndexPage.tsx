@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { useEffect, useReducer, useState, useCallback } from 'react';
 import { jsx, css } from '@emotion/core';
-import { useQuery } from '@apollo/react-hooks';
 import { Button, CircularProgress } from '@material-ui/core';
 import { ArrowRight as ArrowRightIcon } from '@material-ui/icons';
 import { AppHeader } from 'components/AppHeader';
@@ -9,8 +8,7 @@ import { RestaurantList } from 'components/RestaurantList';
 import { RestarantFilterModal } from 'containers/RestaurantFilterModal';
 import { SearchForm } from 'components/SearchForm';
 import { FilterState, FilterAction, FilterRestaurantContext } from 'contexts/filterRestaurant';
-import { GET_RESTAURANTS } from 'queries/query';
-import { GetRestaurantsQuery, GetRestaurantsQueryVariables } from 'types/graphql';
+import { useGetRestaurantsQuery } from 'types/graphql';
 
 const initialFilterState: FilterState = {
   range: null,
@@ -91,10 +89,7 @@ const pageFooterStyle = css({
 });
 
 export const RestaurantsIndexPage = () => {
-  const { loading, error, data, refetch, fetchMore } = useQuery<GetRestaurantsQuery, GetRestaurantsQueryVariables>(
-    GET_RESTAURANTS,
-    { notifyOnNetworkStatusChange: true },
-  );
+  const { loading, error, data, refetch, fetchMore } = useGetRestaurantsQuery({ notifyOnNetworkStatusChange: true });
   const [filterState, filterDispatch] = useReducer(filterReducer, initialFilterState);
   const [modalOpen, setModalOpen] = useState(false);
   const handleChangeQuery = useCallback((value: string) => filterDispatch({ type: 'changeQuery', payload: value }), [
@@ -127,11 +122,10 @@ export const RestaurantsIndexPage = () => {
         return {
           restaurants: {
             __typename: 'GetRestaurantsResponse',
-            ...prev,
             restaurants: [...prev.restaurants.restaurants, ...fetchMoreResult.restaurants.restaurants],
-            pageInfo: { ...prev.restaurants.pageInfo, ...fetchMoreResult.restaurants.pageInfo },
+            pageInfo: fetchMoreResult.restaurants.pageInfo,
           },
-        } as GetRestaurantsQuery;
+        };
       },
     });
   }, [data, fetchMore, loading]);

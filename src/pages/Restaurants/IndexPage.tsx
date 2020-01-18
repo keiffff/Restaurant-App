@@ -117,7 +117,7 @@ export const RestaurantsIndexPage = () => {
       }),
     [refetch],
   );
-  const handleObserve = useCallback(() => {
+  const handleInterSect = useCallback(() => {
     if (loading || !data || !hasMoreResult) return;
     fetchMore({
       variables: { offsetPage: data.restaurants.pageInfo.currentPage + 1 },
@@ -134,7 +134,7 @@ export const RestaurantsIndexPage = () => {
       },
     });
   }, [data, fetchMore, hasMoreResult, loading]);
-  useIntersectionObserver({ targetRef, callback: handleObserve });
+  useIntersectionObserver({ targetRef, callback: handleInterSect });
 
   return (
     <div>

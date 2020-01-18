@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useEffect, useReducer, useState, useCallback, useMemo } from 'react';
+import { useReducer, useState, useCallback, useMemo, useRef } from 'react';
 import { jsx, css } from '@emotion/core';
 import { Button, CircularProgress } from '@material-ui/core';
 import { ArrowRight as ArrowRightIcon } from '@material-ui/icons';
@@ -8,6 +8,7 @@ import { RestaurantList } from 'components/RestaurantList';
 import { RestarantFilterModal } from 'containers/RestaurantFilterModal';
 import { SearchForm } from 'components/SearchForm';
 import { FilterState, FilterAction, FilterRestaurantContext } from 'contexts/filterRestaurant';
+import { useIntersectionObserver } from 'hooks/IntersectionObserver';
 import { useGetRestaurantsQuery } from 'types/graphql';
 
 const initialFilterState: FilterState = {
@@ -90,6 +91,7 @@ const pageFooterStyle = css({
 
 export const RestaurantsIndexPage = () => {
   const { loading, error, data, refetch, fetchMore } = useGetRestaurantsQuery({ notifyOnNetworkStatusChange: true });
+  const targetRef = useRef<HTMLDivElement>(null);
   const [filterState, filterDispatch] = useReducer(filterReducer, initialFilterState);
   const [modalOpen, setModalOpen] = useState(false);
   const hasMoreResult = useMemo(() => {
@@ -115,11 +117,8 @@ export const RestaurantsIndexPage = () => {
       }),
     [refetch],
   );
-  const handleScroll = useCallback(() => {
-    const reachedBottom =
-      document.body.getBoundingClientRect().top ===
-      document.documentElement.clientHeight - document.documentElement.scrollHeight;
-    if (loading || !data || !reachedBottom || !hasMoreResult) return;
+  const handleObserve = useCallback(() => {
+    if (loading || !data || !hasMoreResult) return;
     fetchMore({
       variables: { offsetPage: data.restaurants.pageInfo.currentPage + 1 },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -135,11 +134,7 @@ export const RestaurantsIndexPage = () => {
       },
     });
   }, [data, fetchMore, hasMoreResult, loading]);
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
+  useIntersectionObserver({ targetRef, callback: handleObserve });
 
   return (
     <div>
@@ -173,6 +168,7 @@ export const RestaurantsIndexPage = () => {
                 /<span css={searchResultTextStyle}>{data.restaurants.pageInfo.totalCount}</span>
               </div>
               <RestaurantList restaurants={data.restaurants.restaurants} />
+              <div ref={targetRef} />
             </div>
           ) : null}
           {loading ? (

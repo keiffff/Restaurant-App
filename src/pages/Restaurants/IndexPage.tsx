@@ -119,7 +119,7 @@ export const RestaurantsIndexPage = () => {
     const reachedBottom =
       document.body.getBoundingClientRect().top ===
       document.documentElement.clientHeight - document.documentElement.scrollHeight;
-    if (loading || !data || !reachedBottom) return;
+    if (loading || !data || !reachedBottom || !hasMoreResult) return;
     fetchMore({
       variables: { offsetPage: data.restaurants.pageInfo.currentPage + 1 },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -134,7 +134,7 @@ export const RestaurantsIndexPage = () => {
         };
       },
     });
-  }, [data, fetchMore, loading]);
+  }, [data, fetchMore, hasMoreResult, loading]);
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
 

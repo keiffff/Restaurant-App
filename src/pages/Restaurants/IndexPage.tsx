@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useEffect, useReducer, useState, useCallback } from 'react';
+import { useEffect, useReducer, useState, useCallback, useMemo } from 'react';
 import { jsx, css } from '@emotion/core';
 import { Button, CircularProgress } from '@material-ui/core';
 import { ArrowRight as ArrowRightIcon } from '@material-ui/icons';
@@ -92,6 +92,12 @@ export const RestaurantsIndexPage = () => {
   const { loading, error, data, refetch, fetchMore } = useGetRestaurantsQuery({ notifyOnNetworkStatusChange: true });
   const [filterState, filterDispatch] = useReducer(filterReducer, initialFilterState);
   const [modalOpen, setModalOpen] = useState(false);
+  const hasMoreResult = useMemo(() => {
+    if (!data) return false;
+    const { totalCount, perPage, currentPage } = data.restaurants.pageInfo;
+
+    return currentPage * perPage < totalCount;
+  }, [data]);
   const handleChangeQuery = useCallback((value: string) => filterDispatch({ type: 'changeQuery', payload: value }), [
     filterDispatch,
   ]);
@@ -160,7 +166,9 @@ export const RestaurantsIndexPage = () => {
             <div>
               <div css={searchResultStyle}>
                 <span css={searchResultTextStyle}>
-                  {data.restaurants.pageInfo.currentPage * data.restaurants.pageInfo.perPage}
+                  {hasMoreResult
+                    ? data.restaurants.pageInfo.currentPage * data.restaurants.pageInfo.perPage
+                    : data.restaurants.pageInfo.totalCount}
                 </span>
                 /<span css={searchResultTextStyle}>{data.restaurants.pageInfo.totalCount}</span>
               </div>

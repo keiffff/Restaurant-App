@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 
-type Props = {
-  callbackOnSuccess?: () => void;
-  callbackOnError?: () => void;
-};
-
-export const useLocationInfo = ({ callbackOnSuccess, callbackOnError }: Props) => {
+export const useLocationInfo = ({
+  onSuccess,
+  onError,
+}: Partial<{
+  onSuccess: (position?: Position) => void;
+  onError: (error?: PositionError) => void;
+}>) => {
   const [currentPosition, setCurrentPosition] = useState<Position | null>(null);
   const [positionError, setPositionError] = useState<PositionError | null>(null);
   useEffect(() => {
@@ -13,14 +14,15 @@ export const useLocationInfo = ({ callbackOnSuccess, callbackOnError }: Props) =
       position => {
         setCurrentPosition(position);
         setPositionError(null);
-        callbackOnSuccess && callbackOnSuccess();
+        onSuccess && onSuccess(position);
       },
       error => {
         setPositionError(error);
-        callbackOnError && callbackOnError();
+        setCurrentPosition(null);
+        onError && onError(error);
       },
     );
-  }, [callbackOnError, callbackOnSuccess]);
+  }, [onError, onSuccess]);
 
   return { positionError, currentPosition };
 };

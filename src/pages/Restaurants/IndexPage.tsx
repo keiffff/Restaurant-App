@@ -134,7 +134,7 @@ export const RestaurantsIndexPage = () => {
       },
     });
   }, [data, fetchMore, hasMoreResult, loading]);
-  useIntersectionObserver({ targetRef, callback: handleInterSect });
+  useIntersectionObserver({ targetRef, onInterSect: handleInterSect });
 
   return (
     <div>
